@@ -2,10 +2,32 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"] // supports full-text search for text for within a database column.
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Job {
+  id               Int      @id @default(autoincrement())
+  slug             String   @unique
+  title            String
+  type             String
+  locationType     String
+  location         String?
+  description      String?
+  salary           Int
+  companyName      String
+  applicationEmail String?
+  applicationUrl   String?
+  companyLogoUrl   String?
+  approved         Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("jobs") // @@map is used to map the model to a different name in the database for naming conventions. note tables and collection names are pluralized and lowertcase or snake_case.
 }
